@@ -94,5 +94,30 @@
 =TEXTJOIN("", TRUE, F5:H)
 
 
+메모용초사
+
+
+=QUERY(
+  REDUCE({"",""}, FILTER(ROW(B5:B150), (B5:B150<>"")*(D5:D150<>"")), 
+    LAMBDA(acc, r, 
+      LET(
+        a_raw, INDIRECT("A"&r),
+        a_val, "<" & a_raw & ">",
+        b_val, INDIRECT("B"&r),
+        d_raw, INDIRECT("D"&r),
+        d_val, IF(d_raw="초본", "", "(" & d_raw & ")"),
+        
+        IF(a_raw <> "", 
+          IF(ROWS(acc) = 1, 
+            VSTACK(acc, {a_val, ""}, {b_val, d_val}), 
+            VSTACK(acc, {"", ""}, {a_val, ""}, {b_val, d_val})
+          ), 
+          VSTACK(acc, {b_val, d_val})
+        )
+      )
+    )
+  ), 
+  "offset 1"
+)
 
 
